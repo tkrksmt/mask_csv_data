@@ -2,10 +2,7 @@ import csv
 import pandas as pd
 import re
 
-file_name        = './data.csv'
-Output_file_name = './data1.csv'
-
-def get_csv_header():
+def get_csv_header(file_name):
     df = pd.read_csv(file_name , sep=',')
     return df.head(0)
 
@@ -32,7 +29,7 @@ def replace_data(data):
         ret.append(row)
     return ret
 
-def read_file():
+def read_file(file_name):
     try:
         with open(file_name, 'r', encoding='UTF-8', errors='', newline='' ) as csv_file:
             #Read Dictionary data
@@ -44,20 +41,25 @@ def read_file():
         print('[ERROR]not exist csv data')
     return list()
 
-def write_file(data):
+def write_file(data , header , file_name):
     if len(data) <= 0:
         return
     
-    with open(Output_file_name, 'w', newline='') as f:
+    with open(file_name, 'w', newline='') as f:
         # create same header
-        w = csv.DictWriter(f, fieldnames = get_csv_header())
+        w = csv.DictWriter(f, fieldnames = header)
         w.writeheader()
         for d in data:
             #print(d)
             w.writerow(d)
 
 def main():
-    data = read_file()
-    write_file(data)
+    #setting file Name
+    file_name        = './data.csv'
+    output_file_name = './data1.csv'
+
+    data = read_file(file_name)
+    header = get_csv_header(file_name)
+    write_file(data ,header , output_file_name)
     
 main()
