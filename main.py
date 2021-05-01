@@ -2,12 +2,11 @@ import csv
 import pandas as pd
 import re
 
-Csv_file_name = './data.csv'
+file_name        = './data.csv'
 Output_file_name = './data1.csv'
-Csv_Data = list()
 
 def get_csv_header():
-    df = pd.read_csv(Csv_file_name , sep=',')
+    df = pd.read_csv(file_name , sep=',')
     return df.head(0)
 
 
@@ -26,34 +25,41 @@ def get_mask_email(email):
     #print(email_masked)
     return email_masked
 
+def replace_data(data):
+    ret = list()
+    for row in data:
+        row['email'] = get_mask_email(row['email'])
+        ret.append(row)
+    return ret
 
 def read_file():
     successFlag = False
     try:
-        with open(Csv_file_name, 'r', encoding='UTF-8', errors='', newline='' ) as csv_file:
+        with open(file_name, 'r', encoding='UTF-8', errors='', newline='' ) as csv_file:
             #Read Dictionary data
             file_data = csv.DictReader(csv_file, delimiter=',', doublequote=True, lineterminator='\r\n', quotechar='"', skipinitialspace=True)
-            for row in file_data:
-                row['email'] = get_mask_email(row['email'])
-                Csv_Data.append(row)
-        successFlag = True
+            data = replace_data(file_data)
+            return data
     
     except FileNotFoundError:
         print('[ERROR]not exist csv data')
-    return successFlag
+    return list()
 
-def write_file():
+def write_file(data):
+    if len(data) <= 0:
+        return
+    
     with open(Output_file_name, 'w', newline='') as f:
         # create same header
         #header = 
         w = csv.DictWriter(f, fieldnames = get_csv_header())
         w.writeheader()
-        for d in Csv_Data:
+        for d in data:
             #print(d)
             w.writerow(d)
 
 def main():
-    if read_file():
-        write_file()
+    data = read_file()
+    write_file(data)
     
 main()
