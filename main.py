@@ -33,7 +33,6 @@ def replace_data(data):
     return ret
 
 def read_file():
-    successFlag = False
     try:
         with open(file_name, 'r', encoding='UTF-8', errors='', newline='' ) as csv_file:
             #Read Dictionary data
@@ -51,7 +50,6 @@ def write_file(data):
     
     with open(Output_file_name, 'w', newline='') as f:
         # create same header
-        #header = 
         w = csv.DictWriter(f, fieldnames = get_csv_header())
         w.writeheader()
         for d in data:
